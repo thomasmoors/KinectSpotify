@@ -219,14 +219,6 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
         /// <param name="detectionConfidence">Confidence value for detection of the discrete gesture</param>
         public void UpdateGestureResult(bool isBodyTrackingIdValid, bool isGestureDetected, float detectionConfidence, Gesture currentGesture)
         {
-            if (!fiveSecondsHavePast)
-            {
-                t1.Start();
-                timerStarted = true;
-                return;
-            }
-
-            fiveSecondsHavePast = false;
             this.IsTracked = isBodyTrackingIdValid;
             this.Confidence = 0.0f;
 
@@ -244,6 +236,14 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                 //triggered the gesture (if detected and confidence is greater than 0.5)
                 if (this.Detected && detectionConfidence > 0.5f)
                 {
+                    if (!fiveSecondsHavePast)
+                    {
+                        t1.Start();
+                        timerStarted = true;
+                        return;
+                    }
+
+                    fiveSecondsHavePast = false;
                     //control spotify
 
                     switch (currentGesture.Name)
@@ -264,7 +264,7 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                             SpotifyHelper.controlSpotify(SpotifyHelper.SpotifyAction.VolumeUp);
                             break;
                     }
-                    
+
 
                     this.Confidence = detectionConfidence;
                     this.ImageSource = this.seatedImage;
