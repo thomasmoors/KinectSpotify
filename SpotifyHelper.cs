@@ -42,6 +42,9 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                 case SpotifyAction.VolumeDown:
                     SendKeys.SendWait("^({DOWN})");
                     break;
+                case SpotifyAction.PlayPause:
+                    SendKeys.SendWait(" ");
+                    break;
             }
         }
         private static bool BringToForeground(string processName)

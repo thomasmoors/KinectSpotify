@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Kinect.VisualGestureBuilder;
 
 namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 {
     public class KinectGesture
     {
         public SpotifyHelper.SpotifyAction sa;
-        public string databaseLocation;
+        public Gesture g;
 
-        public KinectGesture(SpotifyHelper.SpotifyAction sa, string dbLoc)
+        public KinectGesture(SpotifyHelper.SpotifyAction sa, Gesture g)
         {
             this.sa = sa;
-            this.databaseLocation = dbLoc;
+            this.g = g;
         }
     }
 }

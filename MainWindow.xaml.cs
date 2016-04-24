@@ -87,11 +87,11 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
             {
                 GestureResultView result = new GestureResultView(i, false, false, 0.0f);
 
-                foreach (var database in GestureHelper.gestures)
-                {
-                    GestureDetector detector = new GestureDetector(this.kinectSensor, result, database);
+              //  foreach (var database in GestureHelper.gestures)
+              //  {
+                    GestureDetector detector = new GestureDetector(this.kinectSensor, result);
                     this.gestureDetectorList.Add(detector);
-                }
+               // }
 
                 // split gesture results across the first two columns of the content grid
                 ContentControl contentControl = new ContentControl();

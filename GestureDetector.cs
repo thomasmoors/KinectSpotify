@@ -35,16 +35,16 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
         /// <summary> Gesture frame reader which will handle gesture events coming from the sensor </summary>
         private VisualGestureBuilderFrameReader vgbFrameReader = null;
 
-        public KinectGesture kg;
+        public GestureResultView grv;
 
         /// <summary>
         /// Initializes a new instance of the GestureDetector class along with the gesture frame source and reader
         /// </summary>
         /// <param name="kinectSensor">Active sensor to initialize the VisualGestureBuilderFrameSource object with</param>
         /// <param name="gestureResultView">GestureResultView object to store gesture results of a single body to</param>
-        public GestureDetector(KinectSensor kinectSensor, GestureResultView gestureResultView, KinectGesture kg)
+        public GestureDetector(KinectSensor kinectSensor, GestureResultView gestureResultView)
         {
-            this.kg = kg;
+            this.grv = gestureResultView;
 
             if (kinectSensor == null)
             {
@@ -74,17 +74,18 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
             // load the 'Seated' gesture from the gesture database
 
 
-            using (VisualGestureBuilderDatabase database = new VisualGestureBuilderDatabase(kg.databaseLocation))
+            using (VisualGestureBuilderDatabase database = new VisualGestureBuilderDatabase(@"Database\basicnav.gbd"))
             {
                 // we could load all available gestures in the database with a call to vgbFrameSource.AddGestures(database.AvailableGestures), 
                 // but for this program, we only want to track one discrete gesture from the database, so we'll load it by name
-                foreach (Gesture gesture in database.AvailableGestures)
-                {
-                    // if (gesture.Name.Equals(this.seatedGestureName))
-                    //  {
-                    this.vgbFrameSource.AddGesture(gesture);
+                // foreach (Gesture gesture in database.AvailableGestures)
+                // {
+                // if (gesture.Name.Equals(this.seatedGestureName))
+                //  {
+                //only load "basicnav.gbd"
+                this.vgbFrameSource.AddGestures(database.AvailableGestures);
                     // }
-                }
+               // }
             }
 
 
@@ -196,7 +197,7 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                                 if (result != null)
                                 {
                                     // update the GestureResultView object with new gesture result values
-                                    this.GestureResultView.UpdateGestureResult(true, result.Detected, result.Confidence, this.kg);
+                                    this.GestureResultView.UpdateGestureResult(true, result.Detected, result.Confidence, gesture);
                                 }
                             }
                         }
@@ -213,7 +214,7 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
         private void Source_TrackingIdLost(object sender, TrackingIdLostEventArgs e)
         {
             // update the GestureResultView object to show the 'Not Tracked' image in the UI
-            this.GestureResultView.UpdateGestureResult(false, false, 0.0f, this.kg);
+            this.GestureResultView.UpdateGestureResult(false, false, 0.0f, null);
         }
     }
 }
