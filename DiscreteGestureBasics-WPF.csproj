@@ -93,6 +93,7 @@
     </ApplicationDefinition>
     <Compile Include="KinectGesture.cs" />
     <Compile Include="GestureHelper.cs" />
+    <Compile Include="SerialPortHelper.cs" />
     <Compile Include="SpotifyHelper.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

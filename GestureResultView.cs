@@ -15,6 +15,8 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using System.Windows.Forms;
+    using System.IO.Ports;
+
 
     /// <summary>
     /// Stores discrete gesture results for the GestureDetector.
@@ -54,6 +56,12 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 
         private Timer t1 = new Timer();
 
+        // Aanpassen voor andere settings!
+        private const int baudrate = 9600;
+        private const string comport = "COM3";
+
+        private SerialPort sp = new SerialPort(comport, baudrate, Parity.None, 8, StopBits.One);
+
         private bool fiveSecondsHavePast = false;
 
         /// <summary>
@@ -74,6 +82,13 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 
             t1.Tick += new EventHandler(timer1_Tick);
             t1.Interval = 5000; // in miliseconds
+            sp.Open();
+            SerialPortHelper.SendBytesOverCom(this.sp, "h");
+        }
+
+        ~GestureResultView()
+        {
+            sp.Close();
         }
 
 
@@ -202,12 +217,12 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
             }
         }
 
-        private bool timerStarted = false;
+        //private bool timerStarted = false;
 
         private void timer1_Tick(object sender, EventArgs e)
         {
             fiveSecondsHavePast = true;
-            timerStarted = false;
+            //timerStarted = false;
             t1.Stop();
         }
 
@@ -239,7 +254,7 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                     if (!fiveSecondsHavePast)
                     {
                         t1.Start();
-                        timerStarted = true;
+                        //timerStarted = true;
                         return;
                     }
 
@@ -262,6 +277,10 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                             break;
                         case "Volup":
                             SpotifyHelper.controlSpotify(SpotifyHelper.SpotifyAction.VolumeUp);
+                            break;
+
+                        case "SendH":
+                            SerialPortHelper.SendBytesOverCom(this.sp, "h");
                             break;
                     }
 
