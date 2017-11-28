@@ -82,6 +82,10 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 
             t1.Tick += new EventHandler(timer1_Tick);
             t1.Interval = 5000; // in miliseconds
+            if (sp.IsOpen)
+            {
+                sp.Close();
+            }
             sp.Open();
             SerialPortHelper.SendBytesOverCom(this.sp, "h");
         }
