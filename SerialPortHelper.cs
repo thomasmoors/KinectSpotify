@@ -11,8 +11,14 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
     {
       public static void SendBytesOverCom(SerialPort sp, string message)
         {
+            if (sp.IsOpen)
+            {
+                sp.Close();
+            }
+            sp.Open();
             byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(message);
             sp.Write(byteArray, 0, byteArray.Length);
+            sp.Close();
         }
     }
 }
