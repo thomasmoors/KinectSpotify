@@ -56,10 +56,6 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 
         private Timer t1 = new Timer();
 
-        // Aanpassen voor andere settings!
-        private const int baudrate = 9600;
-        private const string comport = "COM40";
-
         private SerialPort sp;
 
         private bool fiveSecondsHavePast = false;
@@ -84,9 +80,9 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
             t1.Interval = 5000; // in miliseconds
 
 
-            this.sp = new SerialPort(comport, baudrate, Parity.None, 8, StopBits.One);
+            this.sp = new SerialPort(Properties.Settings.Default.ComPort, Properties.Settings.Default.Baudrate, Parity.None, 8, StopBits.One);
 
-   
+
         }
 
         ~GestureResultView()

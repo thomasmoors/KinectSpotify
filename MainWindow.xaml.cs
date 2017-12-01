@@ -13,11 +13,14 @@
 
 namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 {
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Windows;
     using System.Windows.Controls;
     using Microsoft.Kinect;
+    using Microsoft.Kinect.Face;
+    using System.IO.Ports;
 
     /// <summary>
     /// Interaction logic for the MainWindow
@@ -41,6 +44,15 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
 
         /// <summary> List of gesture detectors, there will be one detector created for each potential body (max of 6) </summary>
         private List<GestureDetector> gestureDetectorList = null;
+
+
+        private SerialPort sp;
+
+        // The face frame source
+        FaceFrameSource _faceSource = null;
+
+        // The face frame reader
+        FaceFrameReader _faceReader = null;
 
         /// <summary>
         /// Initializes a new instance of the MainWindow class
@@ -113,6 +125,51 @@ namespace Microsoft.Samples.Kinect.DiscreteGestureBasics
                 }
 
                 this.contentGrid.Children.Add(contentControl);
+            }
+
+            // Face detection
+
+            _faceSource = new FaceFrameSource(kinectSensor, 0, 
+                FaceFrameFeatures.BoundingBoxInColorSpace |
+                 FaceFrameFeatures.Happy |
+FaceFrameFeatures.LeftEyeClosed |
+FaceFrameFeatures.MouthOpen |
+FaceFrameFeatures.FaceEngagement |
+FaceFrameFeatures.LookingAway |
+FaceFrameFeatures.PointsInColorSpace |
+FaceFrameFeatures.RightEyeClosed);
+            _faceReader = _faceSource.OpenReader();
+            _faceReader.FrameArrived += FaceReader_FrameArrived;
+
+            this.sp = new SerialPort(Properties.Settings.Default.ComPort, Properties.Settings.Default.Baudrate, Parity.None, 8, StopBits.One);
+        }
+
+        private void FaceReader_FrameArrived(object sender, FaceFrameArrivedEventArgs e)
+        {
+            using (var frame = e.FrameReference.AcquireFrame())
+            {
+                if (frame != null)
+                {
+                    // Get the face frame result
+                    FaceFrameResult result = frame.FaceFrameResult;
+
+                    if (result != null)
+                    {
+                        // Get the face points, mapped in the color space
+                        //var eyeLeft = result.FacePointsInColorSpace[FacePointType.EyeLeft];
+                        //var eyeRight = result.FacePointsInColorSpace[FacePointType.EyeRight];
+                        var nose = result.FacePointsInColorSpace[FacePointType.Nose];
+                        //var mouthLeft = result.FacePointsInColorSpace[FacePointType.MouthCornerLeft];
+                        //var mouthRight = result.FacePointsInColorSpace[FacePointType.MouthCornerRight];
+
+                        // Get the face characteristics
+                        //var eyeLeftClosed = result.FaceProperties[FaceProperty.LeftEyeClosed];
+                        //var eyeRightClosed = result.FaceProperties[FaceProperty.RightEyeClosed];
+                        //var mouthOpen = result.FaceProperties[FaceProperty.MouthOpen];
+
+                        SerialPortHelper.SendBytesOverCom(sp, nose.X.ToString() + ',' + nose.Y.ToString());
+                    }
+                }
             }
         }
 
